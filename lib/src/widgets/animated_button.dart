@@ -162,6 +162,8 @@ class _AnimatedButtonState extends State<AnimatedButton>
             ? 240.0
             : 120.0;
 
+    _width = MediaQuery.of(context).size.width * 0.9;
+
     _sizeAnimation = Tween<double>(begin: 1.0, end: _height / _width)
         .animate(CurvedAnimation(
       parent: widget.controller!,

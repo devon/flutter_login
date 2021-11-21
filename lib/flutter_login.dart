@@ -200,7 +200,7 @@ class __HeaderState extends State<_Header> {
             gap,
         kMaxLogoHeight);
     final displayLogo = widget.logo != null && logoHeight >= kMinLogoHeight;
-    final cardWidth = min(MediaQuery.of(context).size.width * 0.75, 360.0);
+    final cardWidth = min(MediaQuery.of(context).size.width * 0.9, 360.0);
 
     var logo = displayLogo
         ? Image(
@@ -230,10 +230,15 @@ class __HeaderState extends State<_Header> {
         viewState: ViewState.enlarged,
       );
     } else if (!DartHelper.isNullOrEmpty(widget.title)) {
-      title = Text(
-        widget.title!,
-        key: kTitleKey,
-        style: theme.textTheme.headline3,
+      title = Container(
+        width: MediaQuery.of(context).size.width,
+        padding: EdgeInsets.all(20),
+        child: Text(
+          widget.title!,
+          key: kTitleKey,
+          style: theme.textTheme.headline3,
+          maxLines: 2,
+        ),
       );
     } else {
       title = null;
