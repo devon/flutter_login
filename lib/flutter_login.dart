@@ -124,6 +124,7 @@ class _Header extends StatefulWidget {
     this.logoTag,
     this.logoWidth = 0.75,
     this.title,
+    this.titleTextAlign,
     this.titleTag,
     this.height = 250.0,
     this.logoController,
@@ -136,6 +137,7 @@ class _Header extends StatefulWidget {
   final String? logoTag;
   final double logoWidth;
   final String? title;
+  final TextAlign? titleTextAlign;
   final String? titleTag;
   final double height;
   final LoginTheme loginTheme;
@@ -236,6 +238,7 @@ class __HeaderState extends State<_Header> {
         child: Text(
           widget.title!,
           key: kTitleKey,
+          textAlign: widget.titleTextAlign,
           style: theme.textTheme.headline3,
           maxLines: 2,
         ),
@@ -278,6 +281,7 @@ class FlutterLogin extends StatefulWidget {
       required this.onLogin,
       required this.onRecoverPassword,
       this.title,
+      this.titleTextAlign,
 
       /// The [ImageProvider] or asset path [String] for the logo image to be displayed
       dynamic logo,
@@ -332,6 +336,9 @@ class FlutterLogin extends StatefulWidget {
 
   /// The large text above the login [Card], usually the app or company name
   final String? title;
+
+  /// The text alignment of title
+  final TextAlign? titleTextAlign;
 
   /// The image provider for the logo image to be displayed
   final ImageProvider? logo;
@@ -511,6 +518,7 @@ class _FlutterLoginState extends State<FlutterLogin>
       logoTag: widget.logoTag,
       logoWidth: widget.theme?.logoWidth ?? 0.75,
       title: widget.title,
+      titleTextAlign: widget.titleTextAlign,
       titleTag: widget.titleTag,
       loginTheme: loginTheme,
     );
