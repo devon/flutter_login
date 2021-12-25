@@ -46,6 +46,7 @@ class AuthCard extends StatefulWidget {
       this.hideSignUpButton = false,
       this.loginAfterSignUp = true,
       this.hideProvidersTitle = false,
+      this.showErrorMessages = true,
       this.additionalSignUpFields,
       this.disableCustomPageTransformer = false,
       this.loginTheme,
@@ -61,6 +62,7 @@ class AuthCard extends StatefulWidget {
   final bool hideForgotPasswordButton;
   final bool hideSignUpButton;
   final bool loginAfterSignUp;
+  final bool showErrorMessages;
   final LoginUserType userType;
   final bool hideProvidersTitle;
 
@@ -338,6 +340,7 @@ class AuthCardState extends State<AuthCard> with TickerProviderStateMixin {
             hideForgotPasswordButton: widget.hideForgotPasswordButton,
             loginAfterSignUp: widget.loginAfterSignUp,
             hideProvidersTitle: widget.hideProvidersTitle,
+            showErrorMessages: widget.showErrorMessages,
           ),
         );
       case _recoveryIndex:

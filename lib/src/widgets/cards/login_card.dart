@@ -18,6 +18,7 @@ class _LoginCard extends StatefulWidget {
     this.hideSignUpButton = false,
     this.loginAfterSignUp = true,
     this.hideProvidersTitle = false,
+    this.showErrorMessages = true,
   }) : super(key: key);
 
   final AnimationController loadingController;
@@ -32,6 +33,7 @@ class _LoginCard extends StatefulWidget {
   final bool hideSignUpButton;
   final bool loginAfterSignUp;
   final bool hideProvidersTitle;
+  final bool showErrorMessages;
   final LoginUserType userType;
   final bool requireAdditionalSignUpFields;
   final bool requireSignUpConfirmation;
@@ -193,12 +195,14 @@ class _LoginCardState extends State<_LoginCard> with TickerProviderStateMixin {
     await _submitController.reverse();
 
     if (!DartHelper.isNullOrEmpty(error)) {
-      showErrorToast(context, messages.flushbarTitleError, error!);
-      Future.delayed(const Duration(milliseconds: 271), () {
-        if (mounted) {
-          setState(() => _showShadow = true);
-        }
-      });
+      if (widget.showErrorMessages) {
+        showErrorToast(context, messages.flushbarTitleError, error!);
+        Future.delayed(const Duration(milliseconds: 271), () {
+          if (mounted) {
+            setState(() => _showShadow = true);
+          }
+        });
+      }
       setState(() => _isSubmitting = false);
       return false;
     }
@@ -253,12 +257,14 @@ class _LoginCardState extends State<_LoginCard> with TickerProviderStateMixin {
     final messages = Provider.of<LoginMessages>(context, listen: false);
 
     if (!DartHelper.isNullOrEmpty(error)) {
-      showErrorToast(context, messages.flushbarTitleError, error!);
-      Future.delayed(const Duration(milliseconds: 271), () {
-        if (mounted) {
-          setState(() => _showShadow = true);
-        }
-      });
+      if (widget.showErrorMessages) {
+        showErrorToast(context, messages.flushbarTitleError, error!);
+        Future.delayed(const Duration(milliseconds: 271), () {
+          if (mounted) {
+            setState(() => _showShadow = true);
+          }
+        });
+      }
       return false;
     }
 

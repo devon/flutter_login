@@ -294,6 +294,7 @@ class FlutterLogin extends StatefulWidget {
       this.userType = LoginUserType.email,
       this.titleTag,
       this.showDebugButtons = false,
+      this.showErrorMessages = true,
       this.loginProviders = const <LoginProvider>[],
       this.hideForgotPasswordButton = false,
       this.loginAfterSignUp = true,
@@ -376,6 +377,9 @@ class FlutterLogin extends StatefulWidget {
   /// release mode, this will be overrided to false regardless of the value
   /// passed in
   final bool showDebugButtons;
+
+  /// Show error message or not
+  final bool showErrorMessages;
 
   /// This List contains the additional signup fields.
   /// By setting this, after signup another card with a form for additional user data is shown
@@ -807,6 +811,7 @@ class _FlutterLoginState extends State<FlutterLogin>
                             widget.hideForgotPasswordButton,
                         loginAfterSignUp: widget.loginAfterSignUp,
                         hideProvidersTitle: widget.hideProvidersTitle,
+                        showErrorMessages: widget.showErrorMessages,
                         additionalSignUpFields: widget.additionalSignupFields,
                         disableCustomPageTransformer:
                             widget.disableCustomPageTransformer,
