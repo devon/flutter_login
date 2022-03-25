@@ -56,6 +56,7 @@ class LoginTheme with ChangeNotifier {
       this.switchAuthTextColor,
       this.footerTextStyle,
       this.authButtonPadding,
+      this.authButtonStyle,
       this.providerButtonPadding,
       this.footerBottomPadding = 5,
       this.logoWidth,
@@ -121,6 +122,9 @@ class LoginTheme with ChangeNotifier {
 
   /// Provide custom padding for the switch signUp / login button
   final EdgeInsets? authButtonPadding;
+
+  /// Provide custom style for the switch signUp / login button
+  final TextStyle? authButtonStyle;
 
   /// Provide custom padding for the provider buttons
   final EdgeInsets? providerButtonPadding;

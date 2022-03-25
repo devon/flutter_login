@@ -124,6 +124,7 @@ class _Header extends StatefulWidget {
     this.logoTag,
     this.logoWidth = 0.75,
     this.title,
+    this.titleTextAlign,
     this.titleTag,
     this.height = 250.0,
     this.logoController,
@@ -136,6 +137,7 @@ class _Header extends StatefulWidget {
   final String? logoTag;
   final double logoWidth;
   final String? title;
+  final TextAlign? titleTextAlign;
   final String? titleTag;
   final double height;
   final LoginTheme loginTheme;
@@ -165,7 +167,7 @@ class __HeaderState extends State<_Header> {
         ),
       ),
       textDirection: TextDirection.ltr,
-      maxLines: 1,
+      maxLines: 2,
     );
 
     renderParagraph.layout(const BoxConstraints());
@@ -200,7 +202,7 @@ class __HeaderState extends State<_Header> {
             gap,
         kMaxLogoHeight);
     final displayLogo = widget.logo != null && logoHeight >= kMinLogoHeight;
-    final cardWidth = min(MediaQuery.of(context).size.width * 0.75, 360.0);
+    final cardWidth = min(MediaQuery.of(context).size.width * 0.9, 360.0);
 
     var logo = displayLogo
         ? Image(
@@ -230,10 +232,16 @@ class __HeaderState extends State<_Header> {
         viewState: ViewState.enlarged,
       );
     } else if (!DartHelper.isNullOrEmpty(widget.title)) {
-      title = Text(
-        widget.title!,
-        key: kTitleKey,
-        style: theme.textTheme.headline3,
+      title = Container(
+        width: MediaQuery.of(context).size.width,
+        padding: EdgeInsets.all(20),
+        child: Text(
+          widget.title!,
+          key: kTitleKey,
+          textAlign: widget.titleTextAlign,
+          style: theme.textTheme.headline3,
+          maxLines: 2,
+        ),
       );
     } else {
       title = null;
@@ -274,6 +282,7 @@ class FlutterLogin extends StatefulWidget {
       required this.onRecoverPassword,
       this.title,
       this.regexUserValidation,
+      this.titleTextAlign,
 
       /// The [ImageProvider] or asset path [String] for the logo image to be displayed
       dynamic logo,
@@ -286,6 +295,7 @@ class FlutterLogin extends StatefulWidget {
       this.userType = LoginUserType.email,
       this.titleTag,
       this.showDebugButtons = false,
+      this.showErrorMessages = true,
       this.loginProviders = const <LoginProvider>[],
       this.hideForgotPasswordButton = false,
       this.loginAfterSignUp = true,
@@ -331,6 +341,9 @@ class FlutterLogin extends StatefulWidget {
   /// The large text above the login [Card], usually the app or company name
   final String? title;
 
+  /// The text alignment of title
+  final TextAlign? titleTextAlign;
+
   /// The image provider for the logo image to be displayed
   final ImageProvider? logo;
 
@@ -371,6 +384,9 @@ class FlutterLogin extends StatefulWidget {
   /// release mode, this will be overrided to false regardless of the value
   /// passed in
   final bool showDebugButtons;
+
+  /// Show error message or not
+  final bool showErrorMessages;
 
   /// This List contains the additional signup fields.
   /// By setting this, after signup another card with a form for additional user data is shown
@@ -513,6 +529,7 @@ class _FlutterLoginState extends State<FlutterLogin>
       logoTag: widget.logoTag,
       logoWidth: widget.theme?.logoWidth ?? 0.75,
       title: widget.title,
+      titleTextAlign: widget.titleTextAlign,
       titleTag: widget.titleTag,
       loginTheme: loginTheme,
     );
@@ -806,6 +823,7 @@ class _FlutterLoginState extends State<FlutterLogin>
                             widget.hideForgotPasswordButton,
                         loginAfterSignUp: widget.loginAfterSignUp,
                         hideProvidersTitle: widget.hideProvidersTitle,
+                        showErrorMessages: widget.showErrorMessages,
                         additionalSignUpFields: widget.additionalSignupFields,
                         disableCustomPageTransformer:
                             widget.disableCustomPageTransformer,
