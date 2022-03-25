@@ -448,12 +448,12 @@ class FlutterLogin extends StatefulWidget {
   /// Default: false
   final bool scrollable;
 
-  static String? defaultEmailValidator(value) {
-    if (value!.isEmpty || !Regex.email.hasMatch(value)) {
-      return 'Invalid email!';
-    }
-    return null;
-  }
+  // static String? defaultEmailValidator(value) {
+  //   if (value!.isEmpty || !Regex.email.hasMatch(value)) {
+  //     return 'Invalid email!';
+  //   }
+  //   return null;
+  // }
 
   static String? defaultPasswordValidator(value) {
     if (value!.isEmpty || value.length <= 2) {

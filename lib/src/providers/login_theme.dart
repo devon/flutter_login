@@ -62,6 +62,7 @@ class LoginTheme with ChangeNotifier {
     this.primaryColorAsInputLabel = false,
     this.headerMargin,
     this.cardInitialHeight,
+    this.authButtonStyle,
     this.cardTopPosition,
   });
 
