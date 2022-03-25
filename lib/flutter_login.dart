@@ -34,6 +34,7 @@ export 'src/providers/login_messages.dart';
 export 'src/providers/login_theme.dart';
 export 'src/models/term_of_service.dart';
 export 'src/providers/auth.dart';
+export 'package:flutter_signin_button/button_list.dart';
 
 class LoginProvider {
   /// Used for custom sign-in buttons.
@@ -53,9 +54,11 @@ class LoginProvider {
 
   /// A Function called when the provider button is pressed.
   /// It must return null on success, or a `String` describing the error on failure.
-  final ProviderAuthCallback? callback;
+  final ProviderAuthCallback callback;
 
-  /// Optional. Requires that the `additionalSignUpFields` argument is passed to `FlutterLogin`.
+  /// Optional
+  ///
+  /// Requires that the `additionalSignUpFields` argument is passed to `FlutterLogin`.
   /// When given, this callback must return a `Future<bool>`.
   /// If it evaluates to `true` the card containing the additional signup fields is shown, right after the evaluation of `callback`.
   /// If not given the default behaviour is not to show the signup card.
@@ -63,17 +66,17 @@ class LoginProvider {
 
   /// Enable or disable the animation of the button.
   ///
-  /// Default: enabled
-  // final bool animated;
+  /// Default: true
+  final bool animated;
 
-  const LoginProvider({
-    this.button,
-    this.icon,
-    this.callback,
-    this.label = '',
-    this.providerNeedsSignUpCallback,
-    // this.animated = true
-  }) : assert(button != null || icon != null);
+  const LoginProvider(
+      {this.button,
+      this.icon,
+      required this.callback,
+      this.label = '',
+      this.providerNeedsSignUpCallback,
+      this.animated = true})
+      : assert(button != null || icon != null);
 }
 
 class _AnimationTimeDilationDropdown extends StatelessWidget {
@@ -312,8 +315,7 @@ class FlutterLogin extends StatefulWidget {
       this.savedPassword = '',
       this.initialAuthMode = AuthMode.login,
       this.children,
-
-      })
+      this.scrollable = false})
       : assert((logo is String?) || (logo is ImageProvider?)),
         logo = logo is String ? AssetImage(logo) : logo,
         super(key: key);
@@ -441,12 +443,17 @@ class FlutterLogin extends StatefulWidget {
   /// Supply custom widgets to the auth stack such as a custom logo widget
   final List<Widget>? children;
 
-  //static String? defaultEmailValidator(value) {
-  //  if (value!.isEmpty || !Regex.email.hasMatch(value)) {
-  //    return 'Invalid email!';
-  //  }
-  //  return null;
-  //}
+  /// If set to true, make the login window scrollable when overflowing instead
+  /// of resizing the window.
+  /// Default: false
+  final bool scrollable;
+
+  static String? defaultEmailValidator(value) {
+    if (value!.isEmpty || !Regex.email.hasMatch(value)) {
+      return 'Invalid email!';
+    }
+    return null;
+  }
 
   static String? defaultPasswordValidator(value) {
     if (value!.isEmpty || value.length <= 2) {
@@ -739,9 +746,10 @@ class _FlutterLoginState extends State<FlutterLogin>
     final loginTheme = widget.theme ?? LoginTheme();
     final theme = _mergeTheme(theme: Theme.of(context), loginTheme: loginTheme);
     final deviceSize = MediaQuery.of(context).size;
-    const headerMargin = 15;
-    const cardInitialHeight = 300;
-    final cardTopPosition = deviceSize.height / 2 - cardInitialHeight / 2;
+    final headerMargin = loginTheme.headerMargin ?? 15;
+    final cardInitialHeight = loginTheme.cardInitialHeight ?? 300;
+    final cardTopPosition = loginTheme.cardTopPosition ??
+        deviceSize.height / 2 - cardInitialHeight / 2;
     final headerHeight = cardTopPosition - headerMargin;
     final userValidator = widget.userValidator;
     final passwordValidator =
@@ -830,6 +838,7 @@ class _FlutterLoginState extends State<FlutterLogin>
                         loginTheme: widget.theme,
                         navigateBackAfterRecovery:
                             widget.navigateBackAfterRecovery,
+                        scrollable: widget.scrollable,
                       ),
                     ),
                     Positioned(

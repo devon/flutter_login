@@ -234,6 +234,19 @@ class _LoginCardState extends State<_LoginCard> with TickerProviderStateMixin {
   Future<bool> _loginProviderSubmit(
       {required LoginProvider loginProvider,
       AnimationController? control}) async {
+    if (!loginProvider.animated) {
+      String? error = await loginProvider.callback();
+
+      final messages = Provider.of<LoginMessages>(context, listen: false);
+
+      if (!DartHelper.isNullOrEmpty(error)) {
+        showErrorToast(context, messages.flushbarTitleError, error!);
+        return false;
+      }
+
+      return true;
+    }
+
     await control?.forward();
 
     final auth = Provider.of<Auth>(context, listen: false);
@@ -242,7 +255,7 @@ class _LoginCardState extends State<_LoginCard> with TickerProviderStateMixin {
 
     String? error;
 
-    error = await loginProvider.callback!();
+    error = await loginProvider.callback();
 
     // workaround to run after _cardSizeAnimation in parent finished
     // need a cleaner way but currently it works so..
@@ -290,11 +303,12 @@ class _LoginCardState extends State<_LoginCard> with TickerProviderStateMixin {
       width: width,
       loadingController: widget.loadingController,
       interval: _nameTextFieldLoadingAnimationInterval,
-      labelText: messages.userHint,
+      labelText:
+          messages.userHint ?? TextFieldUtils.getLabelText(widget.userType),
       autofillHints: _isSubmitting
           ? null
           : [TextFieldUtils.getAutofillHints(widget.userType)],
-      prefixIcon: const Icon(FontAwesomeIcons.solidUserCircle),
+      prefixIcon: TextFieldUtils.getPrefixIcon(widget.userType),
       keyboardType: TextFieldUtils.getKeyboardType(widget.userType),
       textInputAction: TextInputAction.next,
       onFieldSubmitted: (value) {
@@ -459,18 +473,18 @@ class _LoginCardState extends State<_LoginCard> with TickerProviderStateMixin {
     for (var loginProvider in auth.loginProviders) {
       if (loginProvider.button != null) {
         buttonProvidersList.add(LoginProvider(
-          icon: loginProvider.icon,
-          label: loginProvider.label,
-          button: loginProvider.button,
-          callback: loginProvider.callback,
-        ));
+            icon: loginProvider.icon,
+            label: loginProvider.label,
+            button: loginProvider.button,
+            callback: loginProvider.callback,
+            animated: loginProvider.animated));
       } else if (loginProvider.icon != null) {
         iconProvidersList.add(LoginProvider(
-          icon: loginProvider.icon,
-          label: loginProvider.label,
-          button: loginProvider.button,
-          callback: loginProvider.callback,
-        ));
+            icon: loginProvider.icon,
+            label: loginProvider.label,
+            button: loginProvider.button,
+            callback: loginProvider.callback,
+            animated: loginProvider.animated));
       }
     }
     if (buttonProvidersList.isNotEmpty) {
@@ -526,6 +540,7 @@ class _LoginCardState extends State<_LoginCard> with TickerProviderStateMixin {
               child: Column(
                 children: [
                   AnimatedIconButton(
+                    color: Colors.transparent,
                     icon: loginProvider.icon!,
                     controller: _providerControllerList[index],
                     tooltip: loginProvider.label,
@@ -610,27 +625,26 @@ class _LoginCardState extends State<_LoginCard> with TickerProviderStateMixin {
             alignment: Alignment.topLeft,
             color: theme.cardTheme.color,
             width: cardWidth,
-            padding: const EdgeInsets.symmetric(
-              horizontal: cardPadding,
-              vertical: 10,
-            ),
+            padding: const EdgeInsets.symmetric(horizontal: cardPadding),
             onExpandCompleted: () => _postSwitchAuthController.forward(),
-            child: _buildConfirmPasswordField(textFieldWidth, messages, auth),
+            child: Column(children: [
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 10.0),
+                child:
+                    _buildConfirmPasswordField(textFieldWidth, messages, auth),
+              ),
+              for (var e in auth.termsOfService)
+                TermCheckbox(
+                  termOfService: e,
+                  validation: auth.isSignup,
+                ),
+            ]),
           ),
           Container(
             padding: Paddings.fromRBL(cardPadding),
             width: cardWidth,
             child: Column(
               children: <Widget>[
-                if (auth.isSignup && auth.termsOfService.isNotEmpty)
-                  ...auth.termsOfService
-                      .map((e) => ScaleTransition(
-                            scale: _buttonScaleAnimation,
-                            child: TermCheckbox(
-                              termOfService: e,
-                            ),
-                          ))
-                      .toList(),
                 !widget.hideForgotPasswordButton
                     ? _buildForgotPassword(theme, messages)
                     : SizedBox.fromSize(
