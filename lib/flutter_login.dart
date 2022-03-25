@@ -167,7 +167,7 @@ class __HeaderState extends State<_Header> {
         ),
       ),
       textDirection: TextDirection.ltr,
-      maxLines: 1,
+      maxLines: 2,
     );
 
     renderParagraph.layout(const BoxConstraints());
